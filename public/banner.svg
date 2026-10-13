@@ -1,35 +1,35 @@
 <svg width="1200" height="420" viewBox="0 0 1200 420" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <!-- Background Gradients -->
-    <radialGradient id="bgGlowOrange" cx="50%" cy="0%" r="80%" fx="50%" fy="0%">
-      <stop offset="0%" stop-color="#FF5722" stop-opacity="0.25"/>
-      <stop offset="50%" stop-color="#FF8A00" stop-opacity="0.08"/>
+    <radialGradient id="bgGlowBlue" cx="50%" cy="0%" r="80%" fx="50%" fy="0%">
+      <stop offset="0%" stop-color="#0284C7" stop-opacity="0.25"/>
+      <stop offset="50%" stop-color="#2563EB" stop-opacity="0.10"/>
       <stop offset="100%" stop-color="#050811" stop-opacity="0"/>
     </radialGradient>
     <radialGradient id="bgGlowCyan" cx="90%" cy="100%" r="60%">
-      <stop offset="0%" stop-color="#00D2FF" stop-opacity="0.18"/>
+      <stop offset="0%" stop-color="#00D2FF" stop-opacity="0.20"/>
       <stop offset="100%" stop-color="#050811" stop-opacity="0"/>
     </radialGradient>
     <radialGradient id="bgGlowViolet" cx="10%" cy="80%" r="50%">
-      <stop offset="0%" stop-color="#6366F1" stop-opacity="0.15"/>
+      <stop offset="0%" stop-color="#6366F1" stop-opacity="0.18"/>
       <stop offset="100%" stop-color="#050811" stop-opacity="0"/>
     </radialGradient>
 
-    <!-- Logo Gradients -->
+    <!-- Logo Gradients (Cyan -> Royal Blue -> Indigo) -->
     <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FF9E00"/>
-      <stop offset="50%" stop-color="#FF5400"/>
-      <stop offset="100%" stop-color="#FF0055"/>
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="50%" stop-color="#2563EB"/>
+      <stop offset="100%" stop-color="#6366F1"/>
     </linearGradient>
     <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="0%" stop-color="#FFFFFF"/>
-      <stop offset="60%" stop-color="#F3F4F6"/>
+      <stop offset="60%" stop-color="#F1F5F9"/>
       <stop offset="100%" stop-color="#94A3B8"/>
     </linearGradient>
     <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FF8A00" stop-opacity="0.5"/>
-      <stop offset="50%" stop-color="#38BDF8" stop-opacity="0.2"/>
-      <stop offset="100%" stop-color="#6366F1" stop-opacity="0.4"/>
+      <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.5"/>
+      <stop offset="50%" stop-color="#2563EB" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#6366F1" stop-opacity="0.5"/>
     </linearGradient>
     <linearGradient id="cardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" stop-color="#1E293B" stop-opacity="0.6"/>
@@ -46,7 +46,7 @@
       <feComposite in="SourceGraphic" in2="blur" operator="over"/>
     </filter>
     <filter id="boltShadow" x="-30%" y="-30%" width="160%" height="160%">
-      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#FF6B00" flood-opacity="0.6"/>
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#0284C7" flood-opacity="0.6"/>
     </filter>
 
     <!-- Grid Pattern -->
@@ -94,8 +94,8 @@
   <!-- Subtle Cyber Tech Grid -->
   <rect width="1200" height="420" rx="20" fill="url(#grid)"/>
 
-  <!-- Ambient Ambient Lighting Flares -->
-  <rect width="1200" height="420" rx="20" fill="url(#bgGlowOrange)"/>
+  <!-- Ambient Ambient Lighting Flares (Cyan, Blue & Violet) -->
+  <rect width="1200" height="420" rx="20" fill="url(#bgGlowBlue)"/>
   <rect width="1200" height="420" rx="20" fill="url(#bgGlowCyan)"/>
   <rect width="1200" height="420" rx="20" fill="url(#bgGlowViolet)"/>
 
@@ -106,16 +106,16 @@
   <line x1="350" y1="2" x2="850" y2="2" stroke="url(#logoGrad)" stroke-width="3" filter="url(#softGlow)"/>
 
   <!-- Floating Tech Corner Accents -->
-  <path d="M 28 44 L 28 28 L 44 28" stroke="#FF8A00" stroke-width="2.5" fill="none" opacity="0.8"/>
-  <path d="M 1172 44 L 1172 28 L 1156 28" stroke="#38BDF8" stroke-width="2.5" fill="none" opacity="0.8"/>
-  <path d="M 28 376 L 28 392 L 44 392" stroke="#6366F1" stroke-width="2.5" fill="none" opacity="0.8"/>
-  <path d="M 1172 376 L 1172 392 L 1156 392" stroke="#FF5400" stroke-width="2.5" fill="none" opacity="0.8"/>
+  <path d="M 28 44 L 28 28 L 44 28" stroke="#38BDF8" stroke-width="2.5" fill="none" opacity="0.85"/>
+  <path d="M 1172 44 L 1172 28 L 1156 28" stroke="#818CF8" stroke-width="2.5" fill="none" opacity="0.85"/>
+  <path d="M 28 376 L 28 392 L 44 392" stroke="#6366F1" stroke-width="2.5" fill="none" opacity="0.85"/>
+  <path d="M 1172 376 L 1172 392 L 1156 392" stroke="#0EA5E9" stroke-width="2.5" fill="none" opacity="0.85"/>
 
   <!-- Top Pill: Next-Gen SaaS Platform Badge -->
   <g transform="translate(485, 42)">
-    <rect x="0" y="0" width="230" height="28" rx="14" fill="#111827" fill-opacity="0.9" stroke="#F59E0B" stroke-width="1" stroke-opacity="0.5"/>
-    <circle cx="16" cy="14" r="4" fill="#10B981" filter="url(#softGlow)"/>
-    <text x="30" y="18" fill="#FBBF24" class="badge-text">✦ NEXT-GEN SAAS SUITE</text>
+    <rect x="0" y="0" width="230" height="28" rx="14" fill="#0E1726" fill-opacity="0.9" stroke="#38BDF8" stroke-width="1" stroke-opacity="0.5"/>
+    <circle cx="16" cy="14" r="4" fill="#38BDF8" filter="url(#softGlow)"/>
+    <text x="30" y="18" fill="#7DD3FC" class="badge-text">✦ NEXT-GEN SAAS SUITE</text>
   </g>
 
   <!-- Central Brand Symbol & Veyrix Title -->
@@ -123,7 +123,7 @@
     <!-- Brand Logo Icon: Futuristic Lightning Hexagon -->
     <g transform="translate(-185, -52)" filter="url(#boltShadow)">
       <!-- Hexagon Shield Background -->
-      <polygon points="36,4 66,20 66,56 36,72 6,56 6,20" fill="#171C2E" stroke="url(#logoGrad)" stroke-width="2"/>
+      <polygon points="36,4 66,20 66,56 36,72 6,56 6,20" fill="#0C1527" stroke="url(#logoGrad)" stroke-width="2"/>
       <!-- Lightning Bolt Glyph -->
       <path d="M 40 18 L 24 38 L 35 38 L 30 58 L 48 34 L 37 34 Z" fill="url(#logoGrad)"/>
     </g>
@@ -134,7 +134,7 @@
 
   <!-- Tagline: "Build beyond limits." -->
   <text x="600" y="210" text-anchor="middle" fill="#F8FAFC" class="brand-tagline">
-    Build beyond limits<tspan fill="#FF8A00">.</tspan>
+    Build beyond limits<tspan fill="#38BDF8">.</tspan>
   </text>
 
   <!-- Subheadline -->
@@ -175,14 +175,14 @@
 
     <!-- Pill 4: Hybrid Architecture -->
     <g transform="translate(700, 0)">
-      <rect width="200" height="48" rx="10" fill="url(#cardGrad)" stroke="#F59E0B" stroke-opacity="0.3" stroke-width="1"/>
-      <circle cx="24" cy="24" r="8" fill="#F59E0B" fill-opacity="0.2"/>
-      <text x="18" y="28" fill="#F59E0B" font-size="12">⚡</text>
-      <text x="42" y="24" fill="#FDE68A" class="pill-text">Hybrid Mode</text>
+      <rect width="200" height="48" rx="10" fill="url(#cardGrad)" stroke="#38BDF8" stroke-opacity="0.3" stroke-width="1"/>
+      <circle cx="24" cy="24" r="8" fill="#0284C7" fill-opacity="0.2"/>
+      <text x="18" y="28" fill="#38BDF8" font-size="12">⚡</text>
+      <text x="42" y="24" fill="#E0F2FE" class="pill-text">Hybrid Mode</text>
       <text x="42" y="38" fill="#94A3B8" font-size="11">Live DB + Demo Mode</text>
     </g>
   </g>
 
   <!-- Bottom Ambient Glow Dots -->
-  <circle cx="600" cy="415" r="40" fill="#FF8A00" fill-opacity="0.2" filter="url(#glowFilter)"/>
+  <circle cx="600" cy="415" r="40" fill="#0284C7" fill-opacity="0.25" filter="url(#glowFilter)"/>
 </svg>
