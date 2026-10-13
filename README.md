@@ -1,5 +1,9 @@
 <div align="center">
 
+<img src="./public/banner.svg" alt="Veyrix - Build beyond limits" width="100%" />
+
+<br/><br/>
+
 # ⚡ Veyrix
 
 **Build beyond limits.**  

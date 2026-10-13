@@ -25,6 +25,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/toast";
 import { ProjectsOverviewChart } from "@/components/dashboard/projects-overview-chart";
 import { ActivityFeed } from "@/components/dashboard/activity-feed";
+import { HeroBanner } from "@/components/dashboard/hero-banner";
 import { DashboardOverviewData } from "@/types/saas";
 import { getOverviewMetricsAction } from "@/lib/actions/overview";
 
@@ -60,6 +61,9 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
+      {/* Brand Hero Banner */}
+      <HeroBanner />
+
       {/* Top Welcome & Actions Bar */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-border/60 pb-5">
         <div>
