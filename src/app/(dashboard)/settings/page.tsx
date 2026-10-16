@@ -40,8 +40,10 @@ import {
 } from "@/components/ui/table";
 import { initialApiKeys } from "@/lib/mock-data";
 import { ApiKey } from "@/types/saas";
+import { useAuth } from "@/components/providers/auth-provider";
 
 export default function SettingsPage() {
+  const { requireAuth } = useAuth();
   const [apiKeys, setApiKeys] = React.useState<ApiKey[]>(initialApiKeys);
   const [newKeyDialogOpen, setNewKeyDialogOpen] = React.useState(false);
   const [newKeyName, setNewKeyName] = React.useState("");
@@ -80,11 +82,13 @@ export default function SettingsPage() {
   };
 
   const handleRevokeKey = (id: string) => {
-    if (confirm("Revoke this API Key immediately? All requests using it will fail.")) {
-      setApiKeys((prev) =>
-        prev.map((k) => (k.id === id ? { ...k, status: "Revoked" } : k))
-      );
-    }
+    requireAuth(() => {
+      if (confirm("Revoke this API Key immediately? All requests using it will fail.")) {
+        setApiKeys((prev) =>
+          prev.map((k) => (k.id === id ? { ...k, status: "Revoked" } : k))
+        );
+      }
+    }, "To revoke API keys, please sign in.");
   };
 
   const handleCopy = (text: string) => {
@@ -95,8 +99,10 @@ export default function SettingsPage() {
 
   const handleSaveGeneral = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSaved(true);
-    setTimeout(() => setIsSaved(false), 2500);
+    requireAuth(() => {
+      setIsSaved(true);
+      setTimeout(() => setIsSaved(false), 2500);
+    }, "To save workspace settings, please sign in.");
   };
 
   return (
@@ -132,9 +138,11 @@ export default function SettingsPage() {
 
               <Button
                 onClick={() => {
-                  setNewKeyName("");
-                  setGeneratedSecret(null);
-                  setNewKeyDialogOpen(true);
+                  requireAuth(() => {
+                    setNewKeyName("");
+                    setGeneratedSecret(null);
+                    setNewKeyDialogOpen(true);
+                  }, "To create API secret keys, please sign in.");
                 }}
                 size="sm"
               >

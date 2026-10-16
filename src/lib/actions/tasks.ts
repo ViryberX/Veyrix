@@ -11,7 +11,11 @@ import {
   CreateTaskInput,
   UpdateTaskInput,
 } from "@/lib/db/database";
-import { getServerUser } from "@/lib/auth/get-user";
+import {
+  getServerUser,
+  getAuthenticatedServerUser,
+  isSupabaseConfigured,
+} from "@/lib/auth/get-user";
 import { Task, TaskStatus } from "@/types/saas";
 import { ActionResult } from "./projects";
 
@@ -43,6 +47,20 @@ export async function createTaskAction(
   input: CreateTaskInput
 ): Promise<ActionResult<Task>> {
   try {
+    if (isSupabaseConfigured()) {
+      const authUser = await getAuthenticatedServerUser();
+      if (!authUser) {
+        return {
+          success: false,
+          error: "Authentication required. Please sign in to create tasks.",
+        };
+      }
+      const task = await dbCreateTask(input, authUser);
+      revalidatePath("/tasks");
+      revalidatePath("/projects");
+      return { success: true, data: task };
+    }
+
     const user = await getServerUser();
     const task = await dbCreateTask(input, user);
     revalidatePath("/tasks");
@@ -58,6 +76,20 @@ export async function updateTaskAction(
   input: UpdateTaskInput
 ): Promise<ActionResult<Task>> {
   try {
+    if (isSupabaseConfigured()) {
+      const authUser = await getAuthenticatedServerUser();
+      if (!authUser) {
+        return {
+          success: false,
+          error: "Authentication required. Please sign in to update tasks.",
+        };
+      }
+      const task = await dbUpdateTask(id, input, authUser);
+      revalidatePath("/tasks");
+      revalidatePath("/projects");
+      return { success: true, data: task };
+    }
+
     const user = await getServerUser();
     const task = await dbUpdateTask(id, input, user);
     revalidatePath("/tasks");
@@ -73,6 +105,20 @@ export async function updateTaskStatusAction(
   status: TaskStatus
 ): Promise<ActionResult<Task>> {
   try {
+    if (isSupabaseConfigured()) {
+      const authUser = await getAuthenticatedServerUser();
+      if (!authUser) {
+        return {
+          success: false,
+          error: "Authentication required. Please sign in to change task status.",
+        };
+      }
+      const task = await dbUpdateTask(id, { status }, authUser);
+      revalidatePath("/tasks");
+      revalidatePath("/projects");
+      return { success: true, data: task };
+    }
+
     const user = await getServerUser();
     const task = await dbUpdateTask(id, { status }, user);
     revalidatePath("/tasks");
@@ -85,6 +131,20 @@ export async function updateTaskStatusAction(
 
 export async function deleteTaskAction(id: string): Promise<ActionResult<boolean>> {
   try {
+    if (isSupabaseConfigured()) {
+      const authUser = await getAuthenticatedServerUser();
+      if (!authUser) {
+        return {
+          success: false,
+          error: "Authentication required. Please sign in to delete tasks.",
+        };
+      }
+      await dbDeleteTask(id, authUser);
+      revalidatePath("/tasks");
+      revalidatePath("/projects");
+      return { success: true, data: true };
+    }
+
     const user = await getServerUser();
     await dbDeleteTask(id, user);
     revalidatePath("/tasks");

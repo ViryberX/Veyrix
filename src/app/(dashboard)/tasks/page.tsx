@@ -69,7 +69,7 @@ import { getProjectsAction } from "@/lib/actions/projects";
 
 function TasksPageContent() {
   const { toast } = useToast();
-  const { user } = useAuth();
+  const { user, requireAuth } = useAuth();
   const searchParams = useSearchParams();
   const initialProjectId = searchParams.get("projectId") || "all";
 
@@ -178,37 +178,43 @@ function TasksPageContent() {
 
   // Open Create Dialog
   const handleOpenCreate = () => {
-    setFormData({
-      title: "",
-      description: "",
-      status: "Todo",
-      priority: "Medium",
-      dueDate: "",
-      projectId: projectFilter !== "all" && projectFilter !== "unassigned" ? projectFilter : "",
-    });
-    setFormErrors({});
-    setIsCreateOpen(true);
+    requireAuth(() => {
+      setFormData({
+        title: "",
+        description: "",
+        status: "Todo",
+        priority: "Medium",
+        dueDate: "",
+        projectId: projectFilter !== "all" && projectFilter !== "unassigned" ? projectFilter : "",
+      });
+      setFormErrors({});
+      setIsCreateOpen(true);
+    }, "To create a new task, please sign in or create an account.");
   };
 
   // Open Edit Dialog
   const handleOpenEdit = (task: Task) => {
-    setSelectedTask(task);
-    setFormData({
-      title: task.title,
-      description: task.description || "",
-      status: task.status,
-      priority: task.priority,
-      dueDate: task.dueDate || "",
-      projectId: task.projectId || "",
-    });
-    setFormErrors({});
-    setIsEditOpen(true);
+    requireAuth(() => {
+      setSelectedTask(task);
+      setFormData({
+        title: task.title,
+        description: task.description || "",
+        status: task.status,
+        priority: task.priority,
+        dueDate: task.dueDate || "",
+        projectId: task.projectId || "",
+      });
+      setFormErrors({});
+      setIsEditOpen(true);
+    }, "To edit tasks, please sign in to your account.");
   };
 
   // Open Delete Dialog
   const handleOpenDelete = (task: Task) => {
-    setSelectedTask(task);
-    setIsDeleteOpen(true);
+    requireAuth(() => {
+      setSelectedTask(task);
+      setIsDeleteOpen(true);
+    }, "To delete tasks, please sign in to your account.");
   };
 
   // Submit Create
@@ -273,6 +279,12 @@ function TasksPageContent() {
 
   // Quick Change Status
   const handleQuickStatusChange = async (taskId: string, newStatus: TaskStatus) => {
+    let allowed = false;
+    requireAuth(() => {
+      allowed = true;
+    }, "To update task status, please sign in to your account.");
+    if (!allowed) return;
+
     try {
       const res = await updateTaskStatusAction(taskId, newStatus);
       if (res.success && res.data) {

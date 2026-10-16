@@ -25,6 +25,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useTheme } from "next-themes";
+import { useAuth } from "@/components/providers/auth-provider";
 
 interface CommandPaletteProps {
   open: boolean;
@@ -41,6 +42,7 @@ export function CommandPalette({
 }: CommandPaletteProps) {
   const router = useRouter();
   const { theme, setTheme } = useTheme();
+  const { requireAuth } = useAuth();
   const [query, setQuery] = React.useState("");
 
   React.useEffect(() => {
@@ -69,11 +71,13 @@ export function CommandPalette({
       name: "Create New Project",
       action: () => {
         onOpenChange(false);
-        if (onOpenCreateProject) {
-          onOpenCreateProject();
-        } else {
-          router.push("/projects");
-        }
+        requireAuth(() => {
+          if (onOpenCreateProject) {
+            onOpenCreateProject();
+          } else {
+            router.push("/projects");
+          }
+        }, "To create a project, please sign in to your account.");
       },
       icon: Plus,
       category: "Actions",
@@ -82,11 +86,13 @@ export function CommandPalette({
       name: "Create New Task",
       action: () => {
         onOpenChange(false);
-        if (onOpenCreateTask) {
-          onOpenCreateTask();
-        } else {
-          router.push("/tasks");
-        }
+        requireAuth(() => {
+          if (onOpenCreateTask) {
+            onOpenCreateTask();
+          } else {
+            router.push("/tasks");
+          }
+        }, "To create a task, please sign in to your account.");
       },
       icon: CheckSquare,
       category: "Actions",

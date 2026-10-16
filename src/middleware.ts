@@ -5,16 +5,6 @@ export async function middleware(request: NextRequest) {
   const { response, user, isConfigured } = await updateSession(request);
   const pathname = request.nextUrl.pathname;
 
-  // Protected SaaS application routes
-  const isProtectedRoute =
-    pathname === "/" ||
-    pathname.startsWith("/projects") ||
-    pathname.startsWith("/tasks") ||
-    pathname.startsWith("/analytics") ||
-    pathname.startsWith("/team") ||
-    pathname.startsWith("/billing") ||
-    pathname.startsWith("/settings");
-
   // Public authentication routes
   const isAuthRoute =
     pathname.startsWith("/login") ||
@@ -24,15 +14,7 @@ export async function middleware(request: NextRequest) {
 
   // If Supabase is fully configured with credentials:
   if (isConfigured) {
-    // 1. Unauthenticated user trying to access protected dashboard route -> redirect to login
-    if (isProtectedRoute && !user) {
-      const redirectUrl = request.nextUrl.clone();
-      redirectUrl.pathname = "/login";
-      redirectUrl.searchParams.set("redirectTo", pathname);
-      return NextResponse.redirect(redirectUrl);
-    }
-
-    // 2. Authenticated user trying to access login/register -> redirect to dashboard
+    // Authenticated user trying to access login/register -> redirect to dashboard
     if (isAuthRoute && user) {
       const redirectUrl = request.nextUrl.clone();
       redirectUrl.pathname = "/";
@@ -40,6 +22,9 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  // Allow all dashboard routes (overview, projects, tasks, analytics, team, billing, settings)
+  // to be viewed freely in guest/preview mode. Users will only be prompted to log in when
+  // they attempt write actions or modifications.
   return response;
 }
 

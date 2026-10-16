@@ -31,6 +31,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useAuth } from "@/components/providers/auth-provider";
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -50,6 +51,7 @@ export function Sidebar({
   setMobileOpen,
 }: SidebarProps) {
   const pathname = usePathname();
+  const { requireAuth } = useAuth();
 
   const navLinks = [
     {
@@ -213,9 +215,11 @@ export function Sidebar({
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => {
-                  alert("Create Workspace flow: You are currently on the " + activeWorkspace.plan + " plan.");
+                  requireAuth(() => {
+                    alert("Create Workspace flow: You are currently on the " + activeWorkspace.plan + " plan.");
+                  }, "To create new workspaces, please sign in to your account.");
                 }}
-                className="gap-2 text-primary"
+                className="gap-2 text-primary cursor-pointer"
               >
                 <Plus className="h-3.5 w-3.5" />
                 <span>Create Workspace...</span>

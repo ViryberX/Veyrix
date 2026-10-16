@@ -5,20 +5,29 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { currentUser as mockUser } from "@/lib/mock-data";
 import { User, Role } from "@/types/saas";
+import { AuthModal } from "@/components/auth/auth-modal";
 
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   isConfigured: boolean;
+  isGuest: boolean;
   signOut: () => Promise<void>;
   switchDemoRole?: (role: Role) => void;
+  openAuthModal: (reason?: string) => void;
+  closeAuthModal: () => void;
+  requireAuth: (callback: () => void, reason?: string) => boolean;
 }
 
 const AuthContext = React.createContext<AuthContextType>({
   user: null,
   isLoading: true,
   isConfigured: false,
+  isGuest: false,
   signOut: async () => {},
+  openAuthModal: () => {},
+  closeAuthModal: () => {},
+  requireAuth: () => true,
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -26,6 +35,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = React.useState<User | null>(mockUser);
   const [isLoading, setIsLoading] = React.useState(true);
   const [isConfigured, setIsConfigured] = React.useState(false);
+  const [authModalOpen, setAuthModalOpen] = React.useState(false);
+  const [authModalReason, setAuthModalReason] = React.useState<string | undefined>(undefined);
 
   React.useEffect(() => {
     const supabase = createClient();
@@ -85,7 +96,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await supabase.auth.signOut();
     }
     setUser(null);
-    router.push("/login");
+    router.push("/");
+  };
+
+  const openAuthModal = (reason?: string) => {
+    setAuthModalReason(reason);
+    setAuthModalOpen(true);
+  };
+
+  const closeAuthModal = () => {
+    setAuthModalOpen(false);
+    setAuthModalReason(undefined);
+  };
+
+  const isGuest = isConfigured && !user;
+
+  const requireAuth = (callback: () => void, reason?: string): boolean => {
+    if (isGuest) {
+      openAuthModal(reason);
+      return false;
+    }
+    callback();
+    return true;
   };
 
   const switchDemoRole = async (role: Role) => {
@@ -109,11 +141,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         user,
         isLoading,
         isConfigured,
+        isGuest,
         signOut,
         switchDemoRole,
+        openAuthModal,
+        closeAuthModal,
+        requireAuth,
       }}
     >
       {children}
+      <AuthModal
+        open={authModalOpen}
+        onOpenChange={setAuthModalOpen}
+        reason={authModalReason}
+      />
     </AuthContext.Provider>
   );
 }

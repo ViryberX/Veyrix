@@ -11,7 +11,11 @@ import {
   CreateProjectInput,
   UpdateProjectInput,
 } from "@/lib/db/database";
-import { getServerUser } from "@/lib/auth/get-user";
+import {
+  getServerUser,
+  getAuthenticatedServerUser,
+  isSupabaseConfigured,
+} from "@/lib/auth/get-user";
 import { Project } from "@/types/saas";
 
 export interface ActionResult<T> {
@@ -48,6 +52,21 @@ export async function createProjectAction(
   input: CreateProjectInput
 ): Promise<ActionResult<Project>> {
   try {
+    if (isSupabaseConfigured()) {
+      const authUser = await getAuthenticatedServerUser();
+      if (!authUser) {
+        return {
+          success: false,
+          error: "Authentication required. Please sign in to create projects.",
+        };
+      }
+      const project = await dbCreateProject(input, authUser);
+      revalidatePath("/projects");
+      revalidatePath("/tasks");
+      revalidatePath("/");
+      return { success: true, data: project };
+    }
+
     const user = await getServerUser();
     const project = await dbCreateProject(input, user);
     revalidatePath("/projects");
@@ -64,6 +83,21 @@ export async function updateProjectAction(
   input: UpdateProjectInput
 ): Promise<ActionResult<Project>> {
   try {
+    if (isSupabaseConfigured()) {
+      const authUser = await getAuthenticatedServerUser();
+      if (!authUser) {
+        return {
+          success: false,
+          error: "Authentication required. Please sign in to update projects.",
+        };
+      }
+      const project = await dbUpdateProject(id, input, authUser);
+      revalidatePath("/projects");
+      revalidatePath("/tasks");
+      revalidatePath("/");
+      return { success: true, data: project };
+    }
+
     const user = await getServerUser();
     const project = await dbUpdateProject(id, input, user);
     revalidatePath("/projects");
@@ -77,6 +111,21 @@ export async function updateProjectAction(
 
 export async function deleteProjectAction(id: string): Promise<ActionResult<boolean>> {
   try {
+    if (isSupabaseConfigured()) {
+      const authUser = await getAuthenticatedServerUser();
+      if (!authUser) {
+        return {
+          success: false,
+          error: "Authentication required. Please sign in to delete projects.",
+        };
+      }
+      await dbDeleteProject(id, authUser);
+      revalidatePath("/projects");
+      revalidatePath("/tasks");
+      revalidatePath("/");
+      return { success: true, data: true };
+    }
+
     const user = await getServerUser();
     await dbDeleteProject(id, user);
     revalidatePath("/projects");

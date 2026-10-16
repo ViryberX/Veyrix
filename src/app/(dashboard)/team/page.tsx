@@ -31,8 +31,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { teamMembers as initialMembers } from "@/lib/mock-data";
 import { TeamMember, Role } from "@/types/saas";
+import { useAuth } from "@/components/providers/auth-provider";
 
 export default function TeamPage() {
+  const { requireAuth } = useAuth();
   const [members, setMembers] = React.useState<TeamMember[]>(initialMembers);
   const [inviteDialogOpen, setInviteDialogOpen] = React.useState(false);
   const [inviteEmail, setInviteEmail] = React.useState("");
@@ -65,15 +67,19 @@ export default function TeamPage() {
   };
 
   const handleRemoveMember = (id: string) => {
-    if (confirm("Revoke access for this team member?")) {
-      setMembers((prev) => prev.filter((m) => m.id !== id));
-    }
+    requireAuth(() => {
+      if (confirm("Revoke access for this team member?")) {
+        setMembers((prev) => prev.filter((m) => m.id !== id));
+      }
+    }, "To remove team members, please sign in.");
   };
 
   const handleChangeRole = (id: string, newRole: Role) => {
-    setMembers((prev) =>
-      prev.map((m) => (m.id === id ? { ...m, role: newRole } : m))
-    );
+    requireAuth(() => {
+      setMembers((prev) =>
+        prev.map((m) => (m.id === id ? { ...m, role: newRole } : m))
+      );
+    }, "To change roles, please sign in.");
   };
 
   return (
@@ -89,7 +95,15 @@ export default function TeamPage() {
           </p>
         </div>
 
-        <Button onClick={() => setInviteDialogOpen(true)} size="sm">
+        <Button
+          onClick={() =>
+            requireAuth(
+              () => setInviteDialogOpen(true),
+              "To invite team members, please sign in to your workspace account."
+            )
+          }
+          size="sm"
+        >
           <UserPlus className="mr-1.5 h-3.5 w-3.5" />
           <span>Invite Member</span>
         </Button>

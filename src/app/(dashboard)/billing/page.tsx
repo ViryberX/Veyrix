@@ -15,8 +15,10 @@ import {
 } from "@/components/ui/table";
 import { invoices } from "@/lib/mock-data";
 import { formatCurrency } from "@/lib/utils";
+import { useAuth } from "@/components/providers/auth-provider";
 
 export default function BillingPage() {
+  const { requireAuth } = useAuth();
   const [billingCycle, setBillingCycle] = React.useState<"monthly" | "annual">("monthly");
 
   const plans = [
@@ -129,7 +131,12 @@ export default function BillingPage() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => alert("Billing portal: Stripe customer portal is linked.")}
+              onClick={() =>
+                requireAuth(
+                  () => alert("Billing portal: Stripe customer portal is linked."),
+                  "To access billing settings, please sign in to your workspace account."
+                )
+              }
             >
               <CreditCard className="mr-2 h-3.5 w-3.5" />
               <span>Manage Stripe Billing</span>
@@ -217,8 +224,12 @@ export default function BillingPage() {
                       variant="secondary"
                       className="w-full"
                       onClick={() =>
-                        alert(
-                          `Checkout flow initialized for ${plan.name} tier (${billingCycle}).`
+                        requireAuth(
+                          () =>
+                            alert(
+                              `Checkout flow initialized for ${plan.name} tier (${billingCycle}).`
+                            ),
+                          "To upgrade or change subscription plans, please sign in."
                         )
                       }
                     >

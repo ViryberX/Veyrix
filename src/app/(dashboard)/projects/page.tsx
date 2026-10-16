@@ -65,7 +65,7 @@ import {
 
 export default function ProjectsPage() {
   const { toast } = useToast();
-  const { user, switchDemoRole } = useAuth();
+  const { user, switchDemoRole, requireAuth } = useAuth();
 
   // Data state
   const [projects, setProjects] = React.useState<Project[]>([]);
@@ -158,37 +158,43 @@ export default function ProjectsPage() {
 
   // Open Create Dialog
   const handleOpenCreate = () => {
-    setFormData({
-      name: "",
-      description: "",
-      status: "Active",
-      priority: "Medium",
-      startDate: new Date().toISOString().split("T")[0],
-      dueDate: "",
-    });
-    setFormErrors({});
-    setIsCreateOpen(true);
+    requireAuth(() => {
+      setFormData({
+        name: "",
+        description: "",
+        status: "Active",
+        priority: "Medium",
+        startDate: new Date().toISOString().split("T")[0],
+        dueDate: "",
+      });
+      setFormErrors({});
+      setIsCreateOpen(true);
+    }, "To create a new project, please sign in or create an account.");
   };
 
   // Open Edit Dialog
   const handleOpenEdit = (project: Project) => {
-    setSelectedProject(project);
-    setFormData({
-      name: project.name,
-      description: project.description || "",
-      status: (project.status.charAt(0).toUpperCase() + project.status.slice(1).toLowerCase()) as ProjectStatus,
-      priority: (project.priority ? (project.priority.charAt(0).toUpperCase() + project.priority.slice(1).toLowerCase()) : "Medium") as PriorityLevel,
-      startDate: project.startDate || "",
-      dueDate: project.dueDate || "",
-    });
-    setFormErrors({});
-    setIsEditOpen(true);
+    requireAuth(() => {
+      setSelectedProject(project);
+      setFormData({
+        name: project.name,
+        description: project.description || "",
+        status: (project.status.charAt(0).toUpperCase() + project.status.slice(1).toLowerCase()) as ProjectStatus,
+        priority: (project.priority ? (project.priority.charAt(0).toUpperCase() + project.priority.slice(1).toLowerCase()) : "Medium") as PriorityLevel,
+        startDate: project.startDate || "",
+        dueDate: project.dueDate || "",
+      });
+      setFormErrors({});
+      setIsEditOpen(true);
+    }, "To edit projects, please sign in to your account.");
   };
 
   // Open Delete Dialog
   const handleOpenDelete = (project: Project) => {
-    setSelectedProject(project);
-    setIsDeleteOpen(true);
+    requireAuth(() => {
+      setSelectedProject(project);
+      setIsDeleteOpen(true);
+    }, "To delete projects, please sign in to your account.");
   };
 
   // Submit Create

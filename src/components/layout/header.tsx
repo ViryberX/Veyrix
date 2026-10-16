@@ -57,7 +57,7 @@ export function Header({
   onToggleCollapse,
 }: HeaderProps) {
   const pathname = usePathname();
-  const { user, signOut } = useAuth();
+  const { user, signOut, isGuest } = useAuth();
   const activeUser = user || currentUser;
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
@@ -258,68 +258,98 @@ export function Header({
         {/* Theme Selector (Light, Dark, System) */}
         <ThemeSelector />
 
-        {/* User Profile Menu */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button
-              className="flex items-center gap-2 rounded-lg p-1 hover:bg-secondary transition-colors cursor-pointer border border-transparent hover:border-border"
-              aria-label="User profile menu"
+        {/* User Profile or Guest Mode Actions */}
+        {isGuest ? (
+          <div className="flex items-center gap-2">
+            <div className="hidden xl:inline-flex items-center gap-1.5 rounded-full border border-amber-500/20 bg-amber-500/10 px-2.5 py-0.5 text-[11px] font-medium text-amber-500 dark:text-amber-400">
+              <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" />
+              <span>Guest Preview</span>
+            </div>
+
+            <Button
+              asChild
+              variant="ghost"
+              size="sm"
+              className="h-8 text-xs font-medium"
             >
-              <Avatar
-                src={activeUser.avatar}
-                fallback={activeUser.name.charAt(0)}
-                size="sm"
-              />
-              <span className="hidden lg:inline text-xs font-medium text-foreground">
-                {activeUser.name}
-              </span>
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel>
-              <div className="flex flex-col space-y-1">
-                <span className="text-xs font-semibold text-foreground">
+              <Link href={`/login?redirectTo=${encodeURIComponent(pathname || "/")}`}>
+                Sign In
+              </Link>
+            </Button>
+
+            <Button
+              asChild
+              size="sm"
+              className="h-8 text-xs font-medium shadow-xs"
+            >
+              <Link href="/register">
+                Get Started
+              </Link>
+            </Button>
+          </div>
+        ) : (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                className="flex items-center gap-2 rounded-lg p-1 hover:bg-secondary transition-colors cursor-pointer border border-transparent hover:border-border"
+                aria-label="User profile menu"
+              >
+                <Avatar
+                  src={activeUser.avatar}
+                  fallback={activeUser.name.charAt(0)}
+                  size="sm"
+                />
+                <span className="hidden lg:inline text-xs font-medium text-foreground">
                   {activeUser.name}
                 </span>
-                <span className="text-[11px] text-muted-foreground truncate font-normal">
-                  {activeUser.email}
-                </span>
-                <div className="pt-1">
-                  <Badge variant="outline" className="text-[10px] uppercase font-mono py-0">
-                    {activeUser.role}
-                  </Badge>
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel>
+                <div className="flex flex-col space-y-1">
+                  <span className="text-xs font-semibold text-foreground">
+                    {activeUser.name}
+                  </span>
+                  <span className="text-[11px] text-muted-foreground truncate font-normal">
+                    {activeUser.email}
+                  </span>
+                  <div className="pt-1">
+                    <Badge variant="outline" className="text-[10px] uppercase font-mono py-0">
+                      {activeUser.role}
+                    </Badge>
+                  </div>
                 </div>
-              </div>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Link href="/settings" className="flex items-center gap-2">
-                <UserIcon className="h-3.5 w-3.5 text-muted-foreground" />
-                <span>Account Settings</span>
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href="/billing" className="flex items-center gap-2">
-                <CreditCard className="h-3.5 w-3.5 text-muted-foreground" />
-                <span>Plans & Billing</span>
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href="/settings" className="flex items-center gap-2">
-                <Shield className="h-3.5 w-3.5 text-muted-foreground" />
-                <span>API Keys & Security</span>
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => signOut()}
-              className="flex items-center gap-2 text-destructive focus:bg-destructive/10"
-            >
-              <LogOut className="h-3.5 w-3.5" />
-              <span>Sign out</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link href="/settings" className="flex items-center gap-2">
+                  <UserIcon className="h-3.5 w-3.5 text-muted-foreground" />
+                  <span>Account Settings</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/billing" className="flex items-center gap-2">
+                  <CreditCard className="h-3.5 w-3.5 text-muted-foreground" />
+                  <span>Plans & Billing</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/settings" className="flex items-center gap-2">
+                  <Shield className="h-3.5 w-3.5 text-muted-foreground" />
+                  <span>API Keys & Security</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => signOut()}
+                className="flex items-center gap-2 text-destructive focus:bg-destructive/10"
+              >
+                <LogOut className="h-3.5 w-3.5" />
+                <span>Sign out</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </div>
     </header>
   );

@@ -190,6 +190,15 @@ export default function RegisterPage() {
             Sign in
           </Link>
         </p>
+
+        <div className="text-center">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <span>← Explore Veyrix in Guest Preview</span>
+          </Link>
+        </div>
       </div>
     </div>
   );

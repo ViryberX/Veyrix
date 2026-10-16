@@ -62,3 +62,35 @@ export async function getServerUser(request?: any): Promise<UserContext> {
     orgId: "ws_prod_01",
   };
 }
+
+export function isSupabaseConfigured(): boolean {
+  return Boolean(
+    process.env.NEXT_PUBLIC_SUPABASE_URL &&
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  );
+}
+
+export async function getAuthenticatedServerUser(): Promise<UserContext | null> {
+  try {
+    const supabase = await createClient();
+    if (supabase) {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (user) {
+        return {
+          id: user.id,
+          name: user.user_metadata?.full_name || user.email?.split("@")[0] || "Veyrix Engineer",
+          email: user.email || "",
+          role: (user.user_metadata?.role as Role) || "Owner",
+          orgId: "ws_prod_01",
+        };
+      }
+    }
+  } catch (err) {
+    // Graceful fallback
+  }
+  return null;
+}
+
